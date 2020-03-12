@@ -18,7 +18,7 @@ def about():
 def register():
 	form = RegistrationForm()
 	if form.validate_on_submit():
-		hash_pw = bcrypt.generate_password_hash(form.password.data.decode('utf-8'))
+		hash_pw = bcrypt.generate_password_hash(form.password.data)
 		user = Users(email=form.email.data, password=hash_pw)
 
 		db.session.add(user)
@@ -42,7 +42,7 @@ def login():
 			if next_page:
 				return redirect(next_page)
 			else:
-				return redirect('home')
+				return redirect(url_for('home'))
 	return render_template('login.html', title='Login', form=form)
 
 @app.route('/post', methods=['GET', 'POST'])

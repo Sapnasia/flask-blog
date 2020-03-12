@@ -35,6 +35,19 @@ class PostForm(FlaskForm):
     submit = SubmitField('Post Content')
 
 class RegistrationForm(FlaskForm):
+    first_name = StringField('First Name',
+            validators = [
+                DataRequired(),
+                Length(min=4, max=30)
+            ]
+    )
+
+    last_name = StringField('Last Name',
+            validators = [
+                DataRequired(),
+                Length(min=4, max=30)
+            ]
+    )
     email = StringField('Email',
         validators = [
             DataRequired(),
@@ -54,6 +67,13 @@ class RegistrationForm(FlaskForm):
     )
     submit = SubmitField('Sign Up')
 
+    def validate_email(self, email):
+        user = Users.query.filter_by(email=email.data).first()
+
+        if user:
+            raise ValidationError('Email already in use')
+
+
 
 class LoginForm(FlaskForm):
     email = StringField('Email',
@@ -71,8 +91,3 @@ class LoginForm(FlaskForm):
 
     remember = BooleanField('Remember Me')
     submit = SubmitField('Login')
-    def validate_email(self, email):
-        user = Users.query.filter_by(email=email.data).first()
-
-        if user:
-            raise ValidationError('Email already in use')
